@@ -37,10 +37,10 @@ class UserManager extends AbstractManager
         );
     }
 
-    public function findPasswordByEmail($id)
+    public function findPasswordById($id)
     {
-        return $this->getOneOrNullResult(
-            self::CLASS_NAME,
+        return $this->getOneOrNullValue(
+            //self::CLASS_NAME,
             "SELECT password FROM user WHERE id = :id",
             [":id" => $id]
         );

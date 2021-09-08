@@ -20,10 +20,55 @@ a {
   cursor: pointer;
 }
 
+a:hover {
+  border-bottom: 1px solid rgb(63, 63, 63);
+}
+
+
 p {
   line-height: 1.5em;
 }
 
 .boxShaddow {
   box-shadow: 2px 2px 4px gray;
+}
+
+/* LAYOUT */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(255, 190, 70);
+  padding: 0 1em;
+  height: 75px;
+}
+
+#logo-link:hover, #nav-links a:hover, #back-title a:hover {
+  border-bottom: none;
+}
+
+#nav-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+#nav-links a {
+  padding: 1em;
+}
+
+#nav-links a:hover {
+  font-weight: 600;
+}
+
+/* CATEGORY / SUBJECT / MESSAGE */
+#back-title {
+  margin: 1em 0;
+}
+
+#back-title * {
+  display: inline;
+}
+
+#back-title a i:hover {
+  color: rgb(255, 190, 70);
 }

@@ -85,6 +85,9 @@ class User extends AbstractEntity
     }
     public function setRole($role)
     {
+        if (!$role)
+            $role = "ROLE_USER";
+
         $this->role = $role;
     }
 }

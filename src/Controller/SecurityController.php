@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Service\AbstractController;
+use App\Service\Session;
+use App\Service\Router;
 use App\Model\Manager\UserManager;
 
 class SecurityController extends AbstractController
@@ -10,6 +12,7 @@ class SecurityController extends AbstractController
     public function __construct()
     {
         $this->userManager = new UserManager();
+        $this->session = new Session();
     }
  
     public function index(): array
@@ -81,9 +84,9 @@ class SecurityController extends AbstractController
                 if($user != false && 
                     password_verify(
                         $password, 
-                        $this->userManager->findPasswordByEmail($user->getId())
+                        $this->userManager->findPasswordById($user->getId())
                     )){
-                    $_SESSION["user"] = $user;
+                    Session::setUser($user);
                     //GoTo 'Profile' page with ($msg) or
                     //$msg = "Hello ". $user["username"]);
                     return $this->render("user/profile.php", $user);
@@ -137,11 +140,7 @@ class SecurityController extends AbstractController
     public function logout()
     {
         unset($_SESSION["user"]);
-        $msg = "You've Logged Out from your session!";
-        return [
-            "view" => "home/home.php",
-            "message" => $msg
-        ];
+        return Router::redirect('index.php');
     }
 
 }

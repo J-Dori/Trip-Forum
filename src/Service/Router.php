@@ -27,6 +27,7 @@
             //FQCN = Fully Qualified Class Name = namespace+nom_classe
             $ctrlFQCN = "App\\Controller\\".$ctrlname;
             //si le chemin fabriqué ci-dessus ne correspond pas à un fichier existant
+            $id = null;
             if(!class_exists($ctrlFQCN)){
                 //@TODO : fichier introuvable = 404.php
                 header('HTTP/1.0 404 Not Found');
@@ -37,6 +38,8 @@
                     //l'action à executer est celle de l'URL
                     $action = $_GET['action'];
                     //@TODO : action inconnue = 404.php
+                    if (isset($_GET["id"]))
+                        $id = (int)$_GET["id"];
                 }
                
             }
@@ -44,7 +47,10 @@
             $controller = new $ctrlFQCN();
             //la response à traiter sera le retour de l'appel de la méthode du controller
             //$response = HomeController->index()
-            return $controller->$action();
+            if ($id == null)
+                return $controller->$action();
+            else
+                return $controller->$action($id);
         }
 
         public static function redirect($route)

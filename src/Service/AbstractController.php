@@ -4,7 +4,6 @@ namespace App\Service;
 abstract class AbstractController implements ControllerInterface
 {
     protected function render($view, $data = null){
-        var_dump($data);
         return [
             "view" => $view, 
             "data" => $data

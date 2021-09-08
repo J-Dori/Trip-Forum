@@ -13,6 +13,6 @@
     define("DEFAULT_ACTION", "index");
 
     define("CSS_PATH", "public/css/");
-    define("IMG_PATH", "public/img/");
+    define("IMG_PATH", "public/images/");
     define("JS_PATH", "public/js/");
     define("VIEW_PATH", "view/");

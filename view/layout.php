@@ -12,14 +12,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="<?= CSS_PATH ?>style.css" />
     <title>TRIP FORUM</title>
 </head>
 <body>
     <header>
-        <nav>
-            <a href="index.php">Accueil</a>
-            <a href="?ctrl=security&action=login">Connexion</a>
-            <a href="?ctrl=user&action=profile">Profile</a>
+        <nav class="boxShaddow">
+            <a href="index.php" id="logo-link"><img src="<?= IMG_PATH ?>logo.png" alt="Logo"></a>
+            <div id="nav-links">
+                <a href="index.php">Accueil</a>
+                <a href="?ctrl=security&action=login">Connexion</a>
+                <a href="?ctrl=user&action=profile">Profile</a>
+            </div>
         </nav>
     </header>
 
