@@ -1,0 +1,29 @@
+* { 
+  box-sizing: border-box; 
+  font-family: 'Montserrat', sans-serif; 
+  scroll-behavior: smooth;
+  color: rgb(63, 63, 63);
+}
+
+body {
+  min-height: 100vh;
+}
+
+main {
+  padding: 0 2em;
+  max-width: 1400px;
+  margin: auto;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+p {
+  line-height: 1.5em;
+}
+
+.boxShaddow {
+  box-shadow: 2px 2px 4px gray;
+}
