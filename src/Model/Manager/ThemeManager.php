@@ -3,16 +3,16 @@ namespace App\Model\Manager;
 
 use App\Service\AbstractManager;
 
-class SubjectManager extends AbstractManager
+class ThemeManager extends AbstractManager
 {
-    const CLASS_NAME = "App\Model\Entity\Subject";
+    const CLASS_NAME = "App\Model\Entity\Theme";
 
     public function findAll()
     {
         return $this->getResults(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, theme_id, user_id
-             FROM subject
+            "SELECT id, title, createdAt, country_id
+             FROM theme
              ORDER BY title"
         );
     }
@@ -21,33 +21,33 @@ class SubjectManager extends AbstractManager
     {
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, theme_id, user_id
-             FROM subject
+            "SELECT id, title, createdAt, country_id
+             FROM theme
              WHERE id = :id",
             [":id" => $id]
         );
     }
 
-    public function listSubjectsByTheme($id)
+    public function listThemesByCountry($id)
     {
         return $this->getResults(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, theme_id, user_id
-            FROM subject
-            WHERE theme_id = :id",
+            "SELECT id, title, country_id
+            FROM theme
+            WHERE country_id = :id",
             [":id" => $id]
         );
     }
 
-    /* public function countMessagesBySubject($id)
+    public function countSubjectByTheme($id)
     {
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT COUNT(subject_id) AS countMessages
-             FROM messages
-             WHERE subject_id = :id",
+            "SELECT COUNT(theme_id) AS countThemes
+             FROM subject
+             WHERE theme_id = :id",
             [":id" => $id]
         );
-    } */
+    }
 
 }

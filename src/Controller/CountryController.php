@@ -3,14 +3,14 @@ namespace App\Controller;
 
 use App\Service\AbstractController;
 use App\Model\Manager\ContinentManager;
-use App\Model\Manager\CategoryManager;
+use App\Model\Manager\CountryManager;
 
-class CategoryController extends AbstractController
+class CountryController extends AbstractController
 {
     public function __construct()
     {
         $this->continentManager = new ContinentManager();
-        $this->categoryManager = new CategoryManager();
+        $this->countryManager = new CountryManager();
     }
     
     public function index(): array
@@ -18,12 +18,12 @@ class CategoryController extends AbstractController
         return $this->render("home/home.php");
     }
 
-    public function listCategory($id): array
+    public function listCountry($id): array
     {
-        $category = $this->categoryManager->findAllByContinent($id);
+        $country = $this->countryManager->findAllByContinent($id);
         $continent = $this->continentManager->findOneById($id);
-        return $this->render ("category/category.php", 
-            ["category" => $category, "continent" => $continent]
+        return $this->render ("country/country.php", 
+            ["country" => $country, "continent" => $continent]
         );
     }
 

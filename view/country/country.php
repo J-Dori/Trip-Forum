@@ -1,5 +1,5 @@
 <?php
-    $category = $response["data"]["category"];
+    $country = $response["data"]["country"];
     $continent = $response["data"]["continent"];
 ?>
 
@@ -10,8 +10,8 @@
     </div>
     <div id="categoriesList">
         <h2>Choose a destination Country</h2>
-        <?php foreach ($category as $cat) { ?>
-        <p><a class="link-add" href="?ctrl=subject&action=listSubject&id=<?= $cat->getId() ?>"><?= $cat->getTitle() ?></a></p>
+        <?php foreach ($country as $list) { ?>
+        <p><a href="?ctrl=theme&action=listTheme&id=<?= $list->getId() ?>"><?= $list->getTitle() ?></a></p>
         <?php } ?>
     </div>
 

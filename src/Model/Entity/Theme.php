@@ -3,13 +3,16 @@ namespace App\Model\Entity;
 
 use App\Service\AbstractEntity;
 
-class Message extends AbstractEntity 
+class Theme extends AbstractEntity 
 {
     private $id;
-    private $message;
+    private $title;
     private $createdAt;
-    private $subject;
-    private $user;
+    private $country;
+
+    private $countThemes;
+
+
 
     public function __construct($data)
     {
@@ -25,14 +28,14 @@ class Message extends AbstractEntity
         $this->id = $id;
     }
 
-
-    public function getMessage()
+    
+    public function getTitle()
     {
-        return $this->message;
+        return $this->title;
     }
-    public function setMessage($message)
+    public function setTitle($title)
     {
-        $this->message = $message;
+        $this->title = $title;
     }
 
    
@@ -46,22 +49,22 @@ class Message extends AbstractEntity
     }
 
 
-    public function getSubject()
+    public function getCountry()
     {
-        return $this->subject;
+        return $this->country;
     }
-    public function setSubject($subject)
+    public function setCountry($country)
     {
-        $this->subject = $subject;
+        $this->country = $country;
     }
 
+    public function getCountThemes()
+    {
+        return $this->countThemes;
+    }
+    public function setCountThemes($countThemes)
+    {
+        $this->countThemes = $countThemes;
+    }
 
-    public function getUser()
-    {
-        return $this->user;
-    }
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
 }

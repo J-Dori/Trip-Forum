@@ -8,8 +8,12 @@ class Subject extends AbstractEntity
     private $id;
     private $title;
     private $createdAt;
-    private $category;
+    private $theme;
     private $user;
+
+    private $countThemes;
+
+
 
     public function __construct($data)
     {
@@ -46,13 +50,13 @@ class Subject extends AbstractEntity
     }
 
 
-    public function getCategory()
+    public function getTheme()
     {
-        return $this->category;
+        return $this->theme;
     }
-    public function setCategory($category)
+    public function setTheme($theme)
     {
-        $this->category = $category;
+        $this->theme = $theme;
     }
 
 
@@ -64,4 +68,15 @@ class Subject extends AbstractEntity
     {
         $this->user = $user;
     }
+
+
+    public function getCountThemes()
+    {
+        return $this->countThemes;
+    }
+    public function setCountThemes($countThemes)
+    {
+        $this->countThemes = $countThemes;
+    }
+
 }

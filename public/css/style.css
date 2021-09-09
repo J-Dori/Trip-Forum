@@ -62,13 +62,42 @@ nav {
 
 /* CATEGORY / SUBJECT / MESSAGE */
 #back-title {
-  margin: 1em 0;
+  margin: 2em 0;
 }
 
 #back-title * {
   display: inline;
+  margin-right: 10px;
 }
 
 #back-title a i:hover {
   color: rgb(255, 190, 70);
+}
+
+/* THEME / SUBJECT */
+.theme-list, .subject-list {
+  list-style: none;
+  font-weight: 600;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 2em;
+}
+
+.theme-list a, .subject-list a {
+  font-size: 1.5em;
+}
+
+.theme-list {
+  background-color: rgb(255, 232, 190);
+}
+
+.subject-list {
+  background-color: rgb(255, 243, 224);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subject-user {
+  
 }

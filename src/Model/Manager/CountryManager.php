@@ -3,16 +3,16 @@ namespace App\Model\Manager;
 
 use App\Service\AbstractManager;
 
-class CategoryManager extends AbstractManager
+class CountryManager extends AbstractManager
 {
-    const CLASS_NAME = "App\Model\Entity\Category";
+    const CLASS_NAME = "App\Model\Entity\Country";
 
     public function findAll()
     {
         return $this->getResults(
             self::CLASS_NAME,
             "SELECT id, title, createdAt, continent_id
-             FROM category
+             FROM country
              ORDER BY id"
         );
     }
@@ -22,7 +22,7 @@ class CategoryManager extends AbstractManager
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
             "SELECT id, title, createdAt, continent_id
-             FROM category
+             FROM country
              WHERE id = :id",
             [":id" => $id]
         );
@@ -33,7 +33,7 @@ class CategoryManager extends AbstractManager
         return $this->getResults(
             self::CLASS_NAME,
             "SELECT id, title, createdAt, continent_id
-             FROM category
+             FROM country
              WHERE continent_id = :id",
             [":id" => $id]
         );
@@ -43,7 +43,7 @@ class CategoryManager extends AbstractManager
     {
         return $this->getOneOrNullValue(
             "SELECT title
-             FROM category
+             FROM country
              WHERE continent_id = :id",
             [":id" => $id]
         );

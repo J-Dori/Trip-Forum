@@ -28,15 +28,16 @@ class MessageManager extends AbstractManager
         );
     }
 
-    public function findAllBySubject($id)
+    public function listMessageBySubject($id)
     {
         return $this->getResults(
             self::CLASS_NAME,
             "SELECT id, message, createdAt, subject_id, user_id
-             FROM message
-             WHERE subject_id = :id",
+            FROM message
+            WHERE subject_id = :id",
             [":id" => $id]
         );
     }
+    
 
 }

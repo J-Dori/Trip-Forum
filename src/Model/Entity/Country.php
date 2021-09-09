@@ -3,7 +3,7 @@ namespace App\Model\Entity;
 
 use App\Service\AbstractEntity;
 
-class Category extends AbstractEntity 
+class Country extends AbstractEntity 
 {
     private $id;
     private $title;
