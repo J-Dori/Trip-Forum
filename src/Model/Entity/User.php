@@ -12,6 +12,7 @@ class User extends AbstractEntity
     private $createdAt;
     private $avatar;
     private $role;
+    private $roleText;
 
     public function __construct($data)
     {
@@ -59,13 +60,13 @@ class User extends AbstractEntity
     }
 
 
-    public function getCreatedAt($format = "d-m-Y H:i")
+    public function getCreatedAt($format = "d/m/Y - H:i")
     {
-        return parent::formatDate($this->createdAt);
+        return $this->createdAt->format($format);
     }
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime($createdAt);
     }
 
 
@@ -86,8 +87,25 @@ class User extends AbstractEntity
     public function setRole($role)
     {
         if (!$role)
-            $role = "ROLE_USER";
+            $role = "USER";
 
         $this->role = $role;
+        $this->setRoleText($role);
     }
+
+
+    public function getRoleText()
+    {
+        return $this->roleText;
+    }
+    public function setRoleText($role)
+    {
+        if ($role == "ROLE_ADMIN")
+            $this->roleText = "Administrator";
+        if ($role == "ROLE_MOD")
+            $this->roleText = "Moderator";
+        if ($role == "USER")
+            $this->roleText = "";
+    }
+
 }

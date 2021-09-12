@@ -3,8 +3,8 @@ namespace App\Controller;
 
 use App\Service\AbstractController;
 use App\Service\Session;
-use App\Service\Router;
 use App\Model\Manager\UserManager;
+
 
 class SecurityController extends AbstractController
 {
@@ -21,7 +21,7 @@ class SecurityController extends AbstractController
     }
 
     public function changePassword() {
-        $user = $_SESSION["user"];
+        $user = Session::getUser();
         if(!empty($_POST)){
             $password = filter_input(INPUT_POST, "password", FILTER_VALIDATE_REGEXP, [
                 "options" => [
@@ -36,41 +36,41 @@ class SecurityController extends AbstractController
             $password_repeat = filter_input(INPUT_POST, "password_repeat", FILTER_DEFAULT);
             
             if($password && $password_new && $password_repeat){
-                $email = $_SESSION["user"]["email"];
+                $email = Session::getUser()->getEmail();
 
-                if($email && $password){
-                    $user = $this->userManager->getUserByEmail($email);
+                if($email && $password) {
+                    $user = Session::getUser();
 
-                    if($user != false && password_verify($password, $user['password'])){
-                        if ($password_new !== $password_repeat)
-                            return [
-                                "view" => "user/formChangePassword.php",
-                                "message" => "The fields <b>New password</b> and <b>Repeat new password</b><br>must be the same. Please try again!"
-                            ];
-                        else {
-                            //upd password
-                            $hash = password_hash($password_new, PASSWORD_ARGON2I);
-                            $this->userManager->updatePassword($email, $hash);
-                            return $this->userController->profile("Password changed succesfully!<br>Please Log Out and Login again...");
-                        }
+                    if($user) {
+                        $oldPassword = $this->userManager->findPasswordByEmail($email);
+                        if (password_verify($password, $oldPassword )) {
+                            if ($password_new !== $password_repeat) {
+                                $this->addFlash("error", "The fields <b>New password</b> and <b>Repeat new password</b><br>must be the same. Please try again!...");
+                                return $this->render("user/formChangePassword.php");
+                            }
+                            else {
+                                //upd password
+                                $hash = password_hash($password_new, PASSWORD_ARGON2I);
+                                $this->userManager->updatePassword($email, $hash);
+                                $this->addFlash("success", "Password changed succesfully!<br>Please Login again...");
+                                $this->logoutUser();
+                                return $this->render("security/login.php");
+                            }
 
-                    } else
-                        return [
-                                "view" => "user/formChangePassword.php",
-                                "message" => "Your <b>Actual password</b> is not correct.<br>Please try again!"
-                        ];
+                        } else
+                            $this->addFlash("error", "Your <b>Actual password</b> is not correct.<br>Please try again!");
+                            return $this->render("user/formChangePassword.php");
+                    }
                 }
             } else
-                return [
-                        "view" => "user/formChangePassword.php",
-                        "message" => "All fields are required"
-                ];
+                $this->addFlash("error", "All fields are required");
+                return $this->render("user/formChangePassword.php");
         }
     }
 
+
     public function login(): array
-    { 
-        $msg = "";
+    {
         if(!empty($_POST)){
             $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
             $password = filter_input(INPUT_POST, "password", FILTER_VALIDATE_REGEXP, [
@@ -80,29 +80,29 @@ class SecurityController extends AbstractController
             ]);
 
             if($email && $password){
-                $user = $this->userManager->findUserByEmail(strtolower($email));
-                if($user != false && 
-                    password_verify(
-                        $password, 
-                        $this->userManager->findPasswordById($user->getId())
-                    )){
-                    Session::setUser($user);
-                    //GoTo 'Profile' page with ($msg) or
-                    //$msg = "Hello ". $user["username"]);
-                    return $this->render("user/profile.php", $user);
+                $user = $this->userManager->findUserByEmail($email);
+                if($user) {
+                    if (password_verify ($password, 
+                            $this->userManager->findPasswordByEmail($email)
+                        ))
+                    {
+                        Session::setUser($user);
+                        $this->addFlash("success", "Welcome back <b>". $user->getUsername()."</b> !");
+                        $this->redirectTo("index.php");
+                    }
                 }
-                else $msg =  "Mauvais email ou mot de passe";
+                else $this->addFlash("error", "Your E-mail or Password are incorrect");
             }
-            else $msg =  "Tous les champs sont obligatoires";
+            else $this->addFlash("error", "All fields are required");
         }
 
-        return $this->render("security/login.php");
+        return $this->render("security/login.php"); 
     }
 
 
-    public function register(): array
+
+    public function register()
     {
-        $msg = "";
         if(!empty($_POST)){
             $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
             $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
@@ -112,35 +112,35 @@ class SecurityController extends AbstractController
                 ]
             ]);
             $password_r = filter_input(INPUT_POST, "password_repeat", FILTER_DEFAULT);
+            $avatar = filter_input(INPUT_POST, "avatar", FILTER_SANITIZE_STRING);
 
             if($username && $email && $password && $password_r){
                 
                 if($password === $password_r){
-
-                    if($this->userManager->verifyUser($email, $username) == false){
+                   
+                    if(!$this->userManager->verifyUser($email, $username)){
                         $hash = password_hash($password, PASSWORD_ARGON2I);
-                        if($this->userManager->insertUser($email, $username, $hash)){
-                            $msg = "Inscription réussie !";
-                        }
-                        else $msg = "Erreur 500, réessayez ultérieurement !";
-                    }
-                    else $msg = "Cet email ou ce pseudo sont déjà utilisés,<br>choisissez en un autre";
-                }
-                else $msg = "Les mots de passe ne correspondent pas !";
-            }
-            else $msg = "Tous les champs sont obligatoires";
-        }
 
-        return [
-            "view" => "security/register.php",
-            "message" => $msg
-        ];
+                        if($this->userManager->insertUser($email, $username, $hash, $avatar)){
+                            $this->addFlash("success", "Hello <b>$username</b><br>Welcome to our Forum!");
+                            $this->redirectTo("?ctrl=security&action=login");
+                        }
+                        else $this->addFlash("error", "Error 500, please try again later !");
+                    }
+                    else $this->addFlash("error", "This E-mail or Username are already in use!<br>Please choose another...");
+                }
+                else $this->addFlash("error", "Passwords do not match !");
+            }
+            else $this->addFlash("error", "All fields are required");
+        }
+        return $this->render("security/register.php"); 
     }
 
     public function logout()
     {
-        unset($_SESSION["user"]);
-        return Router::redirect('index.php');
+        $this->logoutUser();
+        $this->addFlash("success", "You've been logged out!<br>See you soon...");
+        $this->redirectTo('index.php');
     }
 
 }

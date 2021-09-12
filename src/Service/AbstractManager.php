@@ -30,7 +30,6 @@ abstract class AbstractManager implements ManagerInterface
             $stmt->execute($params);
         }
         else $stmt = self::$pdo->query($sql);
-
         return $stmt;
     }
 

@@ -39,12 +39,12 @@ class CountryManager extends AbstractManager
         );
     }
 
-    public function findTitle($id)
+    public function pathContinent($id)
     {
         return $this->getOneOrNullValue(
             "SELECT title
-             FROM country
-             WHERE continent_id = :id",
+             FROM continent
+             WHERE id = :id",
             [":id" => $id]
         );
     }

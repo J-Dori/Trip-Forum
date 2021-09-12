@@ -1,3 +1,10 @@
+<?php
+    use App\Service\Session;
+    $userHide = ""; $userConnected = "";
+    if (Session::isAnonymous()) $userHide = "display:none";
+    if (!Session::isAnonymous()) $userConnected = "display:none";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,19 +25,32 @@
 </head>
 <body>
     <header>
-        <nav class="boxShaddow">
-            <a href="index.php" id="logo-link"><img src="<?= IMG_PATH ?>logo.png" alt="Logo"></a>
-            <div id="nav-links">
-                <a href="index.php">Accueil</a>
-                <a href="?ctrl=security&action=login">Connexion</a>
-                <a href="?ctrl=user&action=profile">Profile</a>
-            </div>
-        </nav>
+        <div id="banner" class="boxShaddow">
+            <nav class="">
+                <a href="index.php" id="logo-link"><img src="<?= IMG_PATH ?>logo.png" alt="Logo"></a>
+                <div id="nav-links">
+                    <a href="index.php">Accueil</a>
+                    <a style="<?= $userConnected ?>" href="?ctrl=security&action=login">Connexion</a>
+                    <a style="<?= $userHide ?>" href="?ctrl=user&action=profile">Profile</a>
+                    <a style="<?= $userHide ?>" href="?ctrl=management&action=open">Management</a>
+                    <a style="<?= $userHide ?>" href="?ctrl=security&action=logout">Log Out</a>
+                </div>
+            </nav>
+        </div>
     </header>
 
     <main>
-        <?= $content ?>
+        <?= $content;
+            $msgDisplay = "display:none";
+            $msgType = "";
+            if (isset($_SESSION["messages"])) {
+                $msgType = $_SESSION["messages"]["type"];
+                $msgDisplay = "display:block";
+            } 
+            if ($msgType != "") include "view/popup/$msgType.php" ?>
     </main>
     
+    <script src="public/js/script.js"></script>
+
 </body>
 </html> 

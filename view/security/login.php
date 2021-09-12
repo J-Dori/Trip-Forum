@@ -7,6 +7,7 @@
     <p>
         <input type="password" name="password" id="password" placeholder="Mot de passe..." required>
     </p>
+    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
     <p><input type="submit" value="Connexion"></p>
 </form>
 

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Service\AbstractController;
+use App\Service\Session;
 use App\Model\Manager\CountryManager;
 use App\Model\Manager\ThemeManager;
 use App\Model\Manager\SubjectManager;
@@ -36,6 +37,24 @@ class SubjectController extends AbstractController
                 "theme" => $theme
             ]
         );
+    }
+
+    public function postSubject($id)
+    {
+        $themeId = $_GET["theme"];
+        if(!empty($_POST)) {
+            if (Session::isRoleUser("ROLE_ADMIN")){
+                $subject = filter_input(INPUT_POST, "subject", FILTER_SANITIZE_STRING);
+
+                if($subject){
+                    $this->subjectManager->insertSubject($id, $subject);
+                }
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        return $this->redirectTo("?ctrl=subject&action=listSubject&id=$themeId&country=1&theme=$themeId");
     }
 
 }

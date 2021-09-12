@@ -40,7 +40,7 @@ class Session
         return true;
     }
 
-    public static function getMessages($type)
+/*     public static function getMessages($type)
     {
         if(isset($_SESSION["messages"]) && isset($_SESSION["messages"][$type])){
             $messages = $_SESSION["messages"][$type];
@@ -48,10 +48,36 @@ class Session
             return $messages;
         }
         return [];
-    }
+    } */
 
     public static function setMessage(string $type, string $text) :void
     {
-        $_SESSION['messages'][$type][] = $text;
+        unset($_SESSION["messages"]);
+        $_SESSION['messages'] = ["type" => $type, "msg" => $text];
     }
+
+    public static function getCurrentPath()
+    {
+        if (isset($_SESSION["path"])) {
+            $path = $_SESSION["path"];
+            unset($_SESSION["path"]);
+            return $path;
+        }
+        return null;
+    }
+
+    public static function setCurrentPath() :void
+    {
+        unset($_SESSION["path"]);
+        $string = $_SERVER["REQUEST_URI"];
+        $prefix = "index.php?ctrl=";
+        $index = strpos($string, $prefix) + strlen($prefix);
+        $curPage = substr($string, $index);
+
+        if ($curPage == "") 
+            $curPage = "index.php";
+
+        $_SESSION['path'] = $curPage;
+    }
+
 }

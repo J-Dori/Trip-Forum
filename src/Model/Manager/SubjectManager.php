@@ -2,6 +2,7 @@
 namespace App\Model\Manager;
 
 use App\Service\AbstractManager;
+use App\Service\Session;
 
 class SubjectManager extends AbstractManager
 {
@@ -39,6 +40,16 @@ class SubjectManager extends AbstractManager
         );
     }
 
+    public function findTitle($id)
+    {
+        return $this->getOneOrNullValue(
+            "SELECT title
+             FROM subject
+             WHERE id = :id",
+            [":id" => $id]
+        );
+    }
+
     /* public function countMessagesBySubject($id)
     {
         return $this->getOneOrNullResult(
@@ -49,5 +60,19 @@ class SubjectManager extends AbstractManager
             [":id" => $id]
         );
     } */
+
+    
+    public function insertSubject($id, $subject)
+    {
+        return $this->executeQuery(
+            "INSERT INTO subject (theme_id, title, user_id)
+              VALUES (:theme_id, :title, :user_id)",
+            [
+                ":title" => $subject,
+                ":theme_id" => $id,
+                ":user_id" => Session::getUser()->getId()
+            ]
+        );
+    }
 
 }

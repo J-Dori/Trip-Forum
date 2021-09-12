@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Service\AbstractController;
+use App\Service\Session;
 use App\Model\Manager\UserManager;
 
 class UserController extends AbstractController
@@ -9,6 +10,7 @@ class UserController extends AbstractController
     public function __construct()
     {
         $this->userManager = new UserManager();
+        $this->session = new Session();
     }
 
     public function index(): array
@@ -16,60 +18,35 @@ class UserController extends AbstractController
         return $this->render("home/home.php"); 
     }
 
-    public function checkUserId() {
-        if (isset($_SESSION["user"])) {
-            $id = $_SESSION["user"]["id"];
-        } else {
-            $msg = "Profile not found. Log in, please!";
-            return [
-                "view" => "home/home.php",
-                "message" => $msg
-            ];
-        }
-        return (int)$id;
-    }
-
+    
     public function profile() {
-        //$user =
-        return $this->render("user/profile.php"); 
-        $id = $this->checkUserId();
-        if ($this->userManager->getUserProfile($id) != null) {            
-            if (is_int($id)) {
-                $user = $this->userManager->getUserProfile($id);
-                $address = $this->userManager->getUserAddress($id);
-                $cc = $this->userManager->getUserCC($id);
-
+        if (Session::getUser()) {
             return [
-                    "view"    => "user/profile.php",
-                    
-                    "title"   => "Profile",
-                    "data"    => [
-                        "user"      => $user,
-                        "address"   => $address,
-                        "cc"        => $cc
+                    "view" => "user/profile.php",
+                    "data" => [
+                        "user" => $this->userManager->findOneById(Session::getUser()->getId()),
+                        "last10msg" => $this->userManager->profileList10LastMessages(Session::getUser()->getId())
                     ],
                 ];
-            }
         } else
-            return $id;
+            $this->addFlash("error", "Profile not found. Log in, please!");
+            return $this->render("security/login.php"); 
     }
+
 
     public function formChangePassword() {
-        return [
-                "view" => "user/formChangePassword.php",
-                "title" => "Change password"
-            ];
+        return ["view" => "user/formChangePassword.php"];
     }
 
+
     public function changeAvatarImg() {
+        $type = "error";
+        $message = "An error has occured.<br>Please try again later!";
         if (!isset($_FILES)) {
-            $msg = "An error has occured.<br>Please try again!";
             unset($_FILES);
         }
-
-        $id = $this->checkUserId();
-        if (is_int($id)) {
-            $msg = "";
+        else {
+            $id = Session::getUser()->getId();
             $uploadOk = 1;
             if (isset($_FILES["fileToUpload"])) {
                 $tmpname = $_FILES["fileToUpload"]["tmp_name"];
@@ -84,12 +61,14 @@ class UserController extends AbstractController
                 $maxSize = 2048512;
                 
                 if(!in_array($extension, $extensionsAllowed)) {
-                    $msg = "Sorry, only JPG, JPEG, PNG and GIF files are allowed.";
+                    $type = "error";
+                    $message = "Sorry, only JPG, JPEG, PNG and GIF files are allowed.";
                     $uploadOk = 0;
                 }
 
                 if ($size > $maxSize) {
-                    $msg = "The file size is too big (max: 2Mb)";
+                    $type = "error";
+                    $message = "The file size is too big (max: 2Mb)";
                     $uploadOk = 0;
                 }
 
@@ -98,16 +77,19 @@ class UserController extends AbstractController
                     $uniqueName = uniqid("", true);
                     $file = str_replace(".", "_", $uniqueName).".".$extension;
                     if (!move_uploaded_file($tmpname, "./public/images/avatar/".$file)) {
-                        $msg = "Sorry, there was an error uploading your file.";
+                        $type = "error";
+                        $message = "Sorry, there was an error uploading your file.";
                         $uploadOk = 0;
                     }
-                    $msg = "Image uploaded successfully!";
+                    $type = "success";
+                    $message = "Image uploaded successfully!";
                     
                     $this->userManager->updateAvatarImg($id, $file);
                 }
             }
         }
-        return $this->profile($msg);
+        $this->addFlash($type, $message); 
+        return $this->profile();
     }
 
 

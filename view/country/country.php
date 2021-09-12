@@ -11,7 +11,7 @@
     <div id="categoriesList">
         <h2>Choose a destination Country</h2>
         <?php foreach ($country as $list) { ?>
-        <p><a href="?ctrl=theme&action=listTheme&id=<?= $list->getId() ?>"><?= $list->getTitle() ?></a></p>
+        <p><a class="pagesLink" href="?ctrl=theme&action=listTheme&id=<?= $list->getId() ?>"><?= $list->getTitle() ?></a></p>
         <?php } ?>
     </div>
 

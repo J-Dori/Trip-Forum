@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Service\AbstractController;
+use App\Service\Session;
 use App\Model\Manager\CountryManager;
 use App\Model\Manager\ThemeManager;
 use App\Model\Manager\SubjectManager;
@@ -39,6 +40,46 @@ class MessageController extends AbstractController
                 "subject" => $subject
             ]
         );
+    }
+
+
+    public function postMessage($subjectId)
+    {
+        if(!empty($_POST)) {
+            if (!Session::isAnonymous()){
+                $message = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
+                $forumPath = filter_input(INPUT_POST, "forumPath", FILTER_SANITIZE_STRING);
+
+                if($message && $forumPath){
+                     $this->messageManager->insertMessage($message, $forumPath, $subjectId);
+                }
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");
+    }
+
+    public function deleteMessage($id)
+    {
+        if(!empty($_POST)) {
+            if (!Session::isAnonymous()){
+                $message = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
+                $forumPath = filter_input(INPUT_POST, "forumPath", FILTER_SANITIZE_STRING);
+
+                if($message && $forumPath){
+                     //$this->messageManager->deleteMessage($id);
+                }
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");
+        
     }
 
 }

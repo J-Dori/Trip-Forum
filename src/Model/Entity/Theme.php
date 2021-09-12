@@ -39,13 +39,13 @@ class Theme extends AbstractEntity
     }
 
    
-    public function getCreatedAt($format = "d-m-Y H:i")
+    public function getCreatedAt($format = "d/m/Y - H:i")
     {
-        return parent::formatDate($this->createdAt);
+        return $this->createdAt->format($format);
     }
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime($createdAt);
     }
 
 

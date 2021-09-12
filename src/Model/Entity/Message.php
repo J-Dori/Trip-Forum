@@ -10,6 +10,7 @@ class Message extends AbstractEntity
     private $createdAt;
     private $subject;
     private $user;
+    private $forumPath;
 
     public function __construct($data)
     {
@@ -36,13 +37,13 @@ class Message extends AbstractEntity
     }
 
    
-    public function getCreatedAt($format = "d-m-Y H:i")
+    public function getCreatedAt($format = "d/m/Y - H:i")
     {
-        return parent::formatDate($this->createdAt);
+        return $this->createdAt->format($format);
     }
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime($createdAt);
     }
 
 
@@ -64,4 +65,15 @@ class Message extends AbstractEntity
     {
         $this->user = $user;
     }
+
+
+     public function getForumPath()
+    {
+        return $this->forumPath;
+    }
+    public function setForumPath($forumPath)
+    {
+        $this->forumPath = $forumPath;
+    }
+
 }

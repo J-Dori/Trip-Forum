@@ -50,4 +50,15 @@ class ThemeManager extends AbstractManager
         );
     }
 
+    public function pathCountry($id)
+    {
+        return $this->getOneOrNullResult(
+            self::CLASS_NAME,
+            "SELECT title, continent_id
+             FROM country
+             WHERE id = :id",
+            [":id" => $id]
+        );
+    }
+
 }

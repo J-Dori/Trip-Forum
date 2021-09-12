@@ -32,17 +32,16 @@ class UserManager extends AbstractManager
     {
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT id, username, email FROM user WHERE email = :email",
+            "SELECT id, username, email, createdAt, avatar, role FROM user WHERE email = :email",
             [":email" => $email]
         );
     }
 
-    public function findPasswordById($id)
+    public function findPasswordByEmail($email)
     {
         return $this->getOneOrNullValue(
-            //self::CLASS_NAME,
-            "SELECT password FROM user WHERE id = :id",
-            [":id" => $id]
+            "SELECT password FROM user WHERE email = :email",
+            [":email" => $email]
         );
     }
 
@@ -53,7 +52,7 @@ class UserManager extends AbstractManager
 
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT * FROM user WHERE LOWER(email) = :email OR LOWER(username) = :username",
+            "SELECT id, username, email, createdAt, avatar, role FROM user WHERE LOWER(email) = :email OR LOWER(username) = :username",
             [":email" => $email, ":username" => $username]
         );
     }
@@ -61,7 +60,6 @@ class UserManager extends AbstractManager
     public function insertUser($email, $username, $password)
     {
         return $this->executeQuery(
-            self::CLASS_NAME,
             "INSERT INTO user (username, email, password)
             VALUES (:username, :email, :password)",
             [
@@ -74,7 +72,6 @@ class UserManager extends AbstractManager
 
     public function updatePassword($email, $hash) {
        return $this->executeQuery(
-            self::CLASS_NAME,
             "UPDATE user SET password = :hash
             WHERE email = :email",
             [
@@ -84,14 +81,25 @@ class UserManager extends AbstractManager
         );
     }
 
-    /* PROFILE */
-    /* public function findUserProfile($id)
+    public function updateAvatarImg($id, $updFile)
     {
-        return $this->getOneOrNullResult(
-            self::CLASS_NAME,
-            "SELECT username, email, avatar FROM user WHERE id = :id",
+        return $this->executeQuery(
+            "UPDATE user SET avatar = :updFile WHERE id = :id",
+            [
+                ":id" => $id, 
+                ":updFile" => $updFile
+            ]
+        );
+    }
+
+    
+    public function profileList10LastMessages($id)
+    {
+        return $this->getResults(
+            "App\Model\Entity\Message",
+            "SELECT * FROM message WHERE user_id = :id",
             [":id" => $id]
         );
-    } */
+    }
 
 }

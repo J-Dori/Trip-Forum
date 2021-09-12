@@ -13,5 +13,6 @@
     <p>
         <input type="password" name="password_repeat" id="password_repeat" placeholder="Répétez le mot de passe..." required>
     </p>
+    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
     <p><input type="submit" value="Inscription"></p>
 </form>
