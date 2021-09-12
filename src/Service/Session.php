@@ -70,7 +70,7 @@ class Session
     {
         unset($_SESSION["path"]);
         $string = $_SERVER["REQUEST_URI"];
-        $prefix = "index.php?ctrl=";
+        $prefix = "index.php";
         $index = strpos($string, $prefix) + strlen($prefix);
         $curPage = substr($string, $index);
 

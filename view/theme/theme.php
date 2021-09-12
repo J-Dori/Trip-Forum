@@ -2,7 +2,7 @@
     $theme = $response["data"]["theme"]; //Themes by Country
     $countSubject = $response["data"]["countSubject"];
     $countries = $response["data"]["countries"];
-    $countryId = $_GET["country"];
+    $countryId = $_GET["id"];
 ?>
 
 <div id="theme">

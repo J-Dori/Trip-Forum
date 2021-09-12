@@ -20,6 +20,8 @@
     if (!Session::isAnonymous()) {
         $userId = Session::getUser()->getId();
     }
+
+    Session::setCurrentPath();
     
 ?>
 

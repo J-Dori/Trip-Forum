@@ -64,14 +64,9 @@ class MessageController extends AbstractController
 
     public function deleteMessage($id)
     {
-        if(!empty($_POST)) {
+        if(!($_POST)) {
             if (!Session::isAnonymous()){
-                $message = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
-                $forumPath = filter_input(INPUT_POST, "forumPath", FILTER_SANITIZE_STRING);
-
-                if($message && $forumPath){
-                     //$this->messageManager->deleteMessage($id);
-                }
+                $this->messageManager->deleteMessage($id);
             }
             else {
                 $this->addFlash("error", "You do not have access to this function !");

@@ -75,4 +75,21 @@ class SubjectManager extends AbstractManager
         );
     }
 
+    public function deleteSubject($id)
+    {
+        $this->deleteMessages($id);
+        return $this->executeQuery(
+            "DELETE FROM subject WHERE id = :id",
+            [ ":id" => $id ]
+        );
+    }
+
+    public function deleteMessages($id)
+    {
+        return $this->executeQuery(
+            "DELETE FROM message WHERE subject_id = :id",
+            [ ":id" => $id ]
+        );
+    }
+
 }

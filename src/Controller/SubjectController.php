@@ -54,7 +54,23 @@ class SubjectController extends AbstractController
                 $this->addFlash("error", "You do not have access to this function !");
             }
         }
-        return $this->redirectTo("?ctrl=subject&action=listSubject&id=$themeId&country=1&theme=$themeId");
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");
+    }
+
+    public function deleteSubject($id)
+    {
+        if(!($_POST)) {
+            if (!Session::isAnonymous()){
+                $this->subjectManager->deleteSubject($id);
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");
+        
     }
 
 }
