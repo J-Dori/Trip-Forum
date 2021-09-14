@@ -9,6 +9,7 @@ class Theme extends AbstractEntity
     private $title;
     private $createdAt;
     private $country;
+    private $image;
 
     private $countThemes;
 
@@ -57,6 +58,17 @@ class Theme extends AbstractEntity
     {
         $this->country = $country;
     }
+
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
 
     public function getCountThemes()
     {

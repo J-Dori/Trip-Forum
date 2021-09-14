@@ -76,6 +76,8 @@ class SecurityController extends AbstractController
             $password = filter_input(INPUT_POST, "password", FILTER_VALIDATE_REGEXP, [
                 "options" => [
                     "regexp" => "/^[A-Za-z]{4,}/"
+                    //"/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/"
+                    //min - 6 carac
                 ]
             ]);
 

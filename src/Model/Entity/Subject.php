@@ -10,6 +10,7 @@ class Subject extends AbstractEntity
     private $createdAt;
     private $theme;
     private $user;
+    private $closed = 1; //1=Open * 0=Closed - 
 
     private $countThemes;
 
@@ -67,6 +68,16 @@ class Subject extends AbstractEntity
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+
+    public function getClosed()
+    {
+        return $this->closed;
+    }
+    public function setClosed($closed)
+    {
+        $this->closed = $closed;
     }
 
 

@@ -1,5 +1,7 @@
 <?php
     $subject = $response["data"]["subject"];
+    $msgCount = $response["data"]["msgCount"];
+
     $countries = $response["data"]["countries"];
     $theme = $response["data"]["theme"];
     $countryId = $_GET["country"];
@@ -7,31 +9,31 @@
     $subjectId = $_GET["id"];
 
     use App\Service\Session;
-    $display = "";
-    $userRight = false;
-    if (Session::isAnonymous()) 
-        $display = "display:none";
-    elseif (Session::isRoleUser("ROLE_ADMIN") || (Session::isRoleUser("ROLE_MOD"))) {
-        $display = "display:initial";
-        $userRight = true;
-    }
+    $display = "display:block";
+    $hide = "display:none";
+    $userAdmin = false;
+    $userOwner = false;
+    $userId = false;
 
     if (!Session::isAnonymous()) {
         $userId = Session::getUser()->getId();
+        if (Session::isRoleUser(Session::getUser()->getRole() == "ROLE_ADMIN") || Session::isRoleUser(Session::getUser()->getRole() == "ROLE_ADMIN")) 
+            $userAdmin = true;
     }
 
     Session::setCurrentPath();
+
+            $closedTheme = 1;
+    var_dump($response["data"]);
 ?>
 
-
 <div id="subject">
-
     <div id="back-title">
         <a href="?ctrl=theme&action=listTheme&id=<?= $countryId ?>" alt="Back" class="nav-links"><i class="fas fa-chevron-circle-left fa-2x nav-links"></i></a>
         <h1><?= $countries->getContinent()->getTitle() ." / ". $countries->getTitle() ." / ". $theme->getTitle() ?></h1>
     </div>
-
-    <div id="navUsersBtt" style="<?= $display ?>">
+    
+    <div id="navUsersBtt" style="<?= ($closedTheme != 0 && $userId != false) ? $display : $hide; ?>">
         <a class="add-btt boxShaddow" href="#subjectForm">Add new Subject</a>
     </div>
 
@@ -40,22 +42,50 @@
         <?php 
             foreach ($subject as $list) { 
                 $jsParams = $list->getId() .", 'Subject', '". $list->getTitle() ."'";
+                $closed = $list->getClosed();
+                $userNull = is_null($list->getUser());
+                $qtt = "";
         ?>
             <div class="subject-list boxShaddow">
                 <div class="subject-user">
-                    <img src="public/images/avatar/<?= $list->getUser()->getAvatar() ?>"></img>
+                    <img src="public/images/avatar/<?= ($userNull) ? "noimage.jpg" : $list->getUser()->getAvatar() ?>"></img>
                     <p>
-                        <span>Created by: </span><br>
-                        <span><?= $list->getUser()->getUsername() ?></span><br>
-                        <span style="color:gray"><?= $list->getUser()->getRoleText() ?></span><br>
+                        <span><?= ($userNull) ? "User deleted" : $list->getUser()->getUsername() ?></span><br>
+                        <span style="color:gray"><?= ($userNull) ? "" : $list->getUser()->getRoleText() ?></span><br>
                         <span><?= $list->getCreatedAt() ?></span><br>
                     </p>
                 </div>
+
                 <a class="subject-list-title" href="?ctrl=message&action=listMessage&id=<?= $list->getId() ."&country=". $countryId ."&theme=". $themeId ?>">
                     <?= $list->getTitle() ?>
+                    <span style="<?= ($closed == 0) ? "visibility:visible" : "visibility:hidden" ?>"><i class="fas fa-lock lockClosed"></i></span><br>
+                    <span>
+                    <?php $array = count($msgCount);
+                        for ($i=0; $i=$array; $i++) {
+                        if ($msgCount[$i] == $list->getId())
+                            $qtt = ($count[$i]["countMessages"] == null) ? "0" : $count["countMessages"];
+                    } ?><?= ($qtt == 1) ? "$qtt message" : "$qtt messages"; ?></span>
                 </a>
-                <div class="subject-user-btt" style="<?php if ($list->getUser()->getId() != $userId) echo "display:none"; if ($userRight) echo $display; ?>">
-                    <a class="link-edit" href="?ctrl=subject&action=editSubject&id=<?= $list->getId() ?>"><i class="far fa-edit"></i></a>&emsp;
+
+                <div class="subject-user-btt" style="<?php 
+                    $finalDisplay = $hide;
+                    if ($userId != false) {
+                        if ($closed == 0) //Closed Subject
+                            $finalDisplay = $hide;
+                        else { 
+                            if (!$userNull) {
+                                if ($list->getUser()->getId() == $userId)
+                                    $finalDisplay = $display; //User
+                                if (Session::getUser()->getRole() != "USER") 
+                                    $finalDisplay = $display;//Admin or Mod
+                            }
+                        }   
+                    }
+                    else
+                        $finalDisplay = $hide;
+                    echo $finalDisplay;    
+                ?>">
+                    <a class="link-edit" onclick="openEditModal(<?= $jsParams ?>)"><i class="far fa-edit"></i></a>&emsp;
                     <a class="link-del" onclick="openDeleteModal(<?= $jsParams ?>)"><i class="far fa-trash-alt"></i></a>
                 </div>
             </div>
@@ -64,7 +94,7 @@
 
 </div>
 
-<div id="subjectForm" style="<?= $display ?>">
+<div id="subjectForm" style="<?= ($closedTheme != 0 && $userId != false) ? $display : $hide; ?>">
     <h3>Create a new subject</h3>
     <form action="?ctrl=subject&action=postSubject&id=<?= $themeId ."&country=". $countryId ."&theme=". $themeId ?>" method="post">
         <input type="text" name="subject" id="subject">
@@ -73,6 +103,7 @@
     </form>
 </div>
 
-<div id="delConfModal" class="modal" style="display: none;">
+<div id="modalPopup" class="modal">
+    <?php include "view/popup/edit.php"; ?>
     <?php include "view/popup/delete.php"; ?>
 </div>

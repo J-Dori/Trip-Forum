@@ -42,12 +42,32 @@ class MessageController extends AbstractController
         );
     }
 
+    public function OpenEditMessage($id): array
+    {
+        $countryId = $_GET["country"];
+        $themeId = $_GET["theme"];
+        $subjectId = $_GET["subject"];
+        $message = $this->messageManager->findOneById($id);
+        $subject = $this->subjectManager->findOneById($subjectId);
+        $countries = $this->countryManager->findOneById($countryId);
+        $theme = $this->themeManager->findOneById($themeId);
+        return $this->render ("message/editMessage.php", 
+            [
+                "message" => $message,  
+                "countries" => $countries,
+                "theme" => $theme,
+                "subject" => $subject
+            ]
+        );
+    }
 
+/************************ ADD + EDIT + DELETE */
     public function postMessage($subjectId)
     {
         if(!empty($_POST)) {
             if (!Session::isAnonymous()){
                 $message = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
+                    $message = str_replace("\n", "<br>", $message);
                 $forumPath = filter_input(INPUT_POST, "forumPath", FILTER_SANITIZE_STRING);
 
                 if($message && $forumPath){
@@ -62,9 +82,29 @@ class MessageController extends AbstractController
         return $this->redirectTo("$path");
     }
 
+    public function editMessage($id)
+    {
+        if(!empty($_POST)) {
+            if (!Session::isAnonymous()){
+                $message = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
+                $message = str_replace("\n", "<br>", $message);
+
+                if($message){
+                    $this->messageManager->editMessage($id, $message);
+                }
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");
+        
+    }
+
     public function deleteMessage($id)
     {
-        if(!($_POST)) {
+        if(($_POST)) {
             if (!Session::isAnonymous()){
                 $this->messageManager->deleteMessage($id);
             }
@@ -75,6 +115,37 @@ class MessageController extends AbstractController
         $path = Session::getCurrentPath();
         return $this->redirectTo("$path");
         
+    }
+
+    //REOPEN SUBJECT
+    public function closeSubject($id)
+    {
+        if(!($_POST)) {
+            if (!Session::isAnonymous()){
+                if (Session::getUser()->getId() == $this->subjectManager->findUserSubject($id) || Session::getUser()->getRole() != "USER")
+                $this->subjectManager->closeSubject($id);
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");  
+    }
+
+    public function reopenSubject($id)
+    {
+        if(!($_POST)) {
+            if (!Session::isAnonymous()){
+                if (Session::getUser()->getId() == $this->subjectManager->findUserSubject($id) || Session::getUser()->getRole() != "USER")
+                $this->subjectManager->reopenSubject($id);
+            }
+            else {
+                $this->addFlash("error", "You do not have access to this function !");
+            }
+        }
+        $path = Session::getCurrentPath();
+        return $this->redirectTo("$path");  
     }
 
 }

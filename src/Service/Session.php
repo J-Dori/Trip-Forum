@@ -32,6 +32,20 @@ class Session
         return true;
     }
 
+    public static function isRoleAdminMod()
+    {
+        if(!self::getUser()){
+            return false;
+        }
+        elseif(self::getUser()->getRole() == "ROLE_ADMIN") {
+            return true;
+        }
+        elseif(self::getUser()->getRole() == "ROLE_MOD") {
+            return true;
+        }
+        return false;
+    }
+
     public static function isAnonymous()
     {
         if(self::getUser()){
@@ -59,9 +73,7 @@ class Session
     public static function getCurrentPath()
     {
         if (isset($_SESSION["path"])) {
-            $path = $_SESSION["path"];
-            unset($_SESSION["path"]);
-            return $path;
+            return $_SESSION["path"];
         }
         return null;
     }
@@ -70,14 +82,31 @@ class Session
     {
         unset($_SESSION["path"]);
         $string = $_SERVER["REQUEST_URI"];
-        $prefix = "index.php";
-        $index = strpos($string, $prefix) + strlen($prefix);
-        $curPage = substr($string, $index);
+        if (strpos($string, "#")) 
+            $cleanPath= strstr($string, "#", true);
+        else $cleanPath = $string;
+        $prefix = "?ctrl";
+        $index = strpos($cleanPath, $prefix) + strlen($prefix);
+        $curPage = substr($cleanPath, $index);
 
         if ($curPage == "") 
             $curPage = "index.php";
 
-        $_SESSION['path'] = $curPage;
+        $_SESSION['path'] = "?ctrl$curPage";
     }
+
+    public static function getBetween($string, $start = "", $end = ""){
+    if (strpos($string, $start)) { // required if $start not exist in $string
+        $startCharCount = strpos($string, $start) + strlen($start);
+        $firstSubStr = substr($string, $startCharCount, strlen($string));
+        $endCharCount = strpos($firstSubStr, $end);
+        if ($endCharCount == 0) {
+            $endCharCount = strlen($firstSubStr);
+        }
+        return substr($firstSubStr, 0, $endCharCount);
+    } else {
+        return "";
+    }
+}
 
 }

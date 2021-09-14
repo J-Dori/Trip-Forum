@@ -25,6 +25,10 @@ p {
   line-height: 1.5em;
 }
 
+.txtC {
+  text-align: center;
+}
+
 .boxShaddow {
   box-shadow: 2px 2px 4px gray;
 }
@@ -42,10 +46,10 @@ p {
   color: rgb(41, 108, 255);
 }
 
-.link-edit {
+.link-edit, .fa-lock.lockClosed {
   color: rgb(45, 158, 0);
 }
-.link-edit:hover, .link-edit i:hover {
+.link-edit:hover, .link-edit i:hover, .fa-lock.lockClosed {
   color: rgb(55, 195, 0);
 }
 
@@ -55,6 +59,15 @@ p {
 .link-del:hover, .link-del i:hover {
   color: rgb(195, 0, 0);
 }
+
+.fa-lock.lockClosed {
+  color: darkred;
+}
+
+.fa-lock.lockClosed:hover {
+  color: rgb(195, 0, 0);
+}
+
 
 /* LAYOUT */
 #banner {
@@ -92,7 +105,8 @@ nav {
 }
 
 #navUsersBtt {
-  margin: 2em 0;
+  display: block;
+  margin: 3em 0;
 }
 
 /* Add padding and center-align text to the container */
@@ -102,6 +116,9 @@ nav {
 }
 
 /* The Modal (background) */
+#modalPopup {
+  display: none;
+}
 
 .modal {
   position: fixed; /* Stay in place */
@@ -111,7 +128,7 @@ nav {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(71, 78, 93, 0.9);
+  background-color: rgba(71, 78, 93, 0.8);
   padding-top: 50px;
 }
 
@@ -212,6 +229,11 @@ nav {
   width: 100%;
 }
 
+#messageForm .add-form {
+  padding: 10px;
+  width: 150px;
+}
+
 /* CATEGORY / SUBJECT / MESSAGE */
 #back-title {
   margin: 2em 0;
@@ -227,27 +249,49 @@ nav {
 }
 
 /* THEME / SUBJECT */
-.theme-list, .subject-list, .message-list {
-  list-style: none;
-  font-weight: 600;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 2em;
+
+#themeList {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  width: 1000px;
+  margin: auto;
 }
 
-.theme-list a, .subject-list-title {
+.themeBox {
+  background-color: rgb(255, 251, 245);
+  max-width: 300px !important;
+  min-width: 300px !important;
+  
+  margin: 1em;
+  flex: 2 auto;
+}
+
+.themeBox a, .subject-list-title {
   font-size: 1.5em;
   display: block;
   width: 100%;
   margin-right: 1em;
 }
 
+.themeImg {
+  width: 200px;
+  height: 200px;
+}
+
+
+.subject-list, .message-list {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 2em;
+}
+
 .subject-list-title a:hover {
   color:rgba(83, 83, 83, 0.5);
 }
 
-.theme-list {
-  background-color: rgb(255, 232, 190);
+.subject-list-title {
+  font-weight: 600;
 }
 
 .subject-list, .message-list {
@@ -283,6 +327,34 @@ nav {
 
 .subject-user-btt i, .message-user-btt i {
   padding: 10px 0;
+}
+
+.closedBar, .closeSubjectBtt {
+  padding: 1em;
+  background-color: rgb(121, 39, 39);
+  color: whitesmoke;
+}
+
+.reopenBar {
+  padding: 15px;
+  background-color: rgb(45, 158, 0);
+  color: whitesmoke;
+  cursor: pointer;
+  width: 350px;
+  margin: 1em auto;
+}
+
+.reopenBar:hover {
+  background-color: rgb(55, 195, 0);
+}
+
+.closeSubjectBtt {
+  width: 250px;
+  margin-bottom: 2em;
+}
+
+.closeSubjectBtt:hover {
+  background-color: rgb(165, 53, 53);
 }
 
 /***************************** PROFILE *****************************/

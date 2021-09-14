@@ -11,6 +11,8 @@ class Message extends AbstractEntity
     private $subject;
     private $user;
     private $forumPath;
+    
+    private $countMessages;
 
     public function __construct($data)
     {
@@ -67,7 +69,17 @@ class Message extends AbstractEntity
     }
 
 
-     public function getForumPath()
+    public function getCountMessages()
+    {
+        return $this->countMessages;
+    }
+    public function setCountMessages($countMessages)
+    {
+        $this->countMessages = $countMessages;
+    }
+
+
+    public function getForumPath()
     {
         return $this->forumPath;
     }

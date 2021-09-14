@@ -1,8 +1,5 @@
-<?php
-    $action = "?crtl=". $_GET["ctrl"] ."&action=delete". ucfirst($_GET["ctrl"]);
-?>
-
 <!-- Delete confirmation Modal -->
+<div id="delConfModal" class="modal" style="display: none;">
     <form class="modal-content" id="formDelete" method="POST">
         <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
         <div class="modal-container">
@@ -24,3 +21,4 @@
             </div>
         </div>
     </form>
+</div>

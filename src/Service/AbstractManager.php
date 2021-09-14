@@ -22,7 +22,7 @@ abstract class AbstractManager implements ManagerInterface
         }
     }
 
-    private static function makeQuery($sql, $params = null)
+    protected static function makeQuery($sql, $params = null)
     {
         self::getPDO();
         if($params){

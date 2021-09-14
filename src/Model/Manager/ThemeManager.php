@@ -11,7 +11,7 @@ class ThemeManager extends AbstractManager
     {
         return $this->getResults(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, country_id
+            "SELECT id, title, createdAt, country_id, image
              FROM theme
              ORDER BY title"
         );
@@ -21,7 +21,7 @@ class ThemeManager extends AbstractManager
     {
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, country_id
+            "SELECT id, title, createdAt, country_id, image
              FROM theme
              WHERE id = :id",
             [":id" => $id]
@@ -32,20 +32,9 @@ class ThemeManager extends AbstractManager
     {
         return $this->getResults(
             self::CLASS_NAME,
-            "SELECT id, title, country_id
+            "SELECT id, title, country_id, image
             FROM theme
             WHERE country_id = :id",
-            [":id" => $id]
-        );
-    }
-
-    public function countSubjectByTheme($id)
-    {
-        return $this->getOneOrNullResult(
-            self::CLASS_NAME,
-            "SELECT COUNT(theme_id) AS countThemes
-             FROM subject
-             WHERE theme_id = :id",
             [":id" => $id]
         );
     }
@@ -54,7 +43,7 @@ class ThemeManager extends AbstractManager
     {
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT title, continent_id
+            "SELECT title, continent_id, image
              FROM country
              WHERE id = :id",
             [":id" => $id]

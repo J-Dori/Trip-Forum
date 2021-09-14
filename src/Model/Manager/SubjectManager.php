@@ -12,7 +12,7 @@ class SubjectManager extends AbstractManager
     {
         return $this->getResults(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, theme_id, user_id
+            "SELECT id, title, createdAt, theme_id, user_id, closed
              FROM subject
              ORDER BY title"
         );
@@ -22,7 +22,7 @@ class SubjectManager extends AbstractManager
     {
         return $this->getOneOrNullResult(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, theme_id, user_id
+            "SELECT id, title, createdAt, theme_id, user_id, closed
              FROM subject
              WHERE id = :id",
             [":id" => $id]
@@ -33,7 +33,7 @@ class SubjectManager extends AbstractManager
     {
         return $this->getResults(
             self::CLASS_NAME,
-            "SELECT id, title, createdAt, theme_id, user_id
+            "SELECT id, title, createdAt, theme_id, user_id, closed
             FROM subject
             WHERE theme_id = :id",
             [":id" => $id]
@@ -50,21 +50,40 @@ class SubjectManager extends AbstractManager
         );
     }
 
-    /* public function countMessagesBySubject($id)
+    public function findIfTitleExist($title)
     {
-        return $this->getOneOrNullResult(
-            self::CLASS_NAME,
-            "SELECT COUNT(subject_id) AS countMessages
-             FROM messages
-             WHERE subject_id = :id",
+        return $this->getOneOrNullValue(
+            "SELECT title
+             FROM subject
+             WHERE title = :title",
+            [":title" => $title]
+        );
+    }
+
+    public function findClosedSubject($id)
+    {
+        return $this->getOneOrNullValue(
+            "SELECT closed
+             FROM subject
+             WHERE id = :id",
             [":id" => $id]
         );
-    } */
+    }
 
-    
+    public function findUserSubject($id)
+    {
+        return $this->getOneOrNullValue(
+            "SELECT user_id
+             FROM subject
+             WHERE id = :id",
+            [":id" => $id]
+        );
+    }
+
+//************************ ADD + EDIT + DELETE    
     public function insertSubject($id, $subject)
     {
-        return $this->executeQuery(
+        $this->executeQuery(
             "INSERT INTO subject (theme_id, title, user_id)
               VALUES (:theme_id, :title, :user_id)",
             [
@@ -72,6 +91,16 @@ class SubjectManager extends AbstractManager
                 ":theme_id" => $id,
                 ":user_id" => Session::getUser()->getId()
             ]
+        );
+        return self::$pdo->lastInsertId();
+    }
+
+    public function editSubject($id, $title)
+    {
+        return $this->executeQuery(
+            "UPDATE subject 
+             SET title = :title WHERE id = :id",
+            [ ":id" => $id, ":title" => $title ]
         );
     }
 
@@ -83,11 +112,30 @@ class SubjectManager extends AbstractManager
             [ ":id" => $id ]
         );
     }
-
+    //Deletes all related messages with $this subject
     public function deleteMessages($id)
     {
         return $this->executeQuery(
             "DELETE FROM message WHERE subject_id = :id",
+            [ ":id" => $id ]
+        );
+    }
+
+//************************ CLOSE & REOPEN SUBJECT
+    public function closeSubject($id)
+    {
+        return $this->executeQuery(
+            "UPDATE subject 
+             SET closed = 0 WHERE id = :id",
+            [ ":id" => $id ]
+        );
+    }
+
+    public function reopenSubject($id)
+    {
+        return $this->executeQuery(
+            "UPDATE subject 
+             SET closed = 1 WHERE id = :id",
             [ ":id" => $id ]
         );
     }

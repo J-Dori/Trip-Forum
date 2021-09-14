@@ -7,6 +7,7 @@ use App\Service\Session;
 class MessageManager extends AbstractManager
 {
     const CLASS_NAME = "App\Model\Entity\Message";
+    const CLASS_SUB = "App\Model\Entity\Subject";
 
     public function findAll()
     {
@@ -40,6 +41,20 @@ class MessageManager extends AbstractManager
             [":id" => $id]
         );
     }
+
+    public function countMessagesBySubject($id)
+    {
+        return $this->getResults(
+            self::CLASS_SUB,
+            "SELECT s.id, COUNT(m.id) AS countMessages, s.theme_id
+            FROM subject s
+				LEFT JOIN message m ON s.id = m.subject_id 
+				LEFT JOIN theme t ON s.theme_id = t.id
+            WHERE s.theme_id = :id
+            GROUP BY s.id",
+            [":id" => $id]
+        );
+    }
     
     public function insertMessage($message, $forumPath, $subjectId)
     {
@@ -52,6 +67,15 @@ class MessageManager extends AbstractManager
                 ":forumPath" => $forumPath,
                 ":user_id" => Session::getUser()->getId()
             ]
+        );
+    }
+
+    public function editMessage($id, $message)
+    {
+        return $this->executeQuery(
+            "UPDATE message 
+             SET message = :message WHERE id = :id",
+            [ ":id" => $id, ":message" => $message ]
         );
     }
 

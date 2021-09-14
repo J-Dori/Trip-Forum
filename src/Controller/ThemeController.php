@@ -24,12 +24,10 @@ class ThemeController extends AbstractController
     public function listTheme($id): array
     {
         $theme = $this->themeManager->listThemesByCountry($id);
-        $countSubject = $this->themeManager->countSubjectByTheme($id);
         $countries = $this->countryManager->findOneById($id);
         return $this->render ("theme/theme.php", 
             [
                 "theme" => $theme, 
-                "countSubject" => $countSubject, 
                 "countries" => $countries
             ]
         );
